@@ -1,0 +1,57 @@
+
+public class service extends Service {
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
+    }
+
+    @Override
+    public void onCreate() {
+        Toast.makeText(this,"created",Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        try {
+
+
+                Toast.makeText(getApplicationContext(),"start",Toast.LENGTH_LONG).show();
+
+        Uri uri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        Ringtone ringtone=RingtoneManager.getRingtone(this,uri);
+        ringtone.play();}
+        catch (Exception e){}
+
+        return super.onStartCommand(intent, flags, startId);
+    }
+
+    @Override
+    public void onDestroy() {
+        Toast.makeText(this,"destroy",Toast.LENGTH_LONG).show();
+
+    }
+
+}
+///////////
+nanifast
+        <service android:name=".service" android:enabled="true"/>
+
+/////////////
+        startService(new Intent(this,service.class));
+        stopService(new Intent(this,service.class));
+
+
+/////////////////////
+alarm
+
+        Intent intent=new Intent(MainActivity.this,service.class);
+        AlarmManager alarmManager= (AlarmManager) getSystemService(ALARM_SERVICE);
+        PendingIntent pendingIntent=PendingIntent.getService(MainActivity.this,0,intent,0);
+
+        Calendar calendar=Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY,12);
+        calendar.set(Calendar.MINUTE,37);
+        calendar.set(Calendar.SECOND,00);
+
+        alarmManager.setRepeating(AlarmManager.RTC,calendar.getTimeInMillis(),24*60*60*1000,pendingIntent);

@@ -1,0 +1,33 @@
+public void write(View view) {
+        try {
+            FileOutputStream fileOutputStream=openFileOutput("mostafa.txt",this.MODE_APPEND);
+
+            byte a[]="mmmm".getBytes();
+
+            fileOutputStream.write(a);
+            fileOutputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_LONG).show();
+        }
+
+    }
+
+    public void read(View view) {
+        try {
+            FileInputStream fileInputStream=openFileInput("mostafa.txt");
+            String a="";
+            int i=0;
+            while ((i=fileInputStream.read())!=-1){
+                a+=String.valueOf((char) i);
+            }
+            textView.setText(a);
+            fileInputStream.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_LONG).show();
+
+        }
+
+    }

@@ -1,0 +1,32 @@
+public class pop extends DialogFragment  {
+View view;
+    TimePicker timePicker;
+    public View onCreateView(LayoutInflater inflater,
+                             ViewGroup container,
+                             Bundle savedInstanceState){
+        view=inflater.inflate(R.layout.pop,container,false);
+        Button button=view.findViewById(R.id.button);
+        button.setOnClickListener(new View.OnClickListener() {
+            @TargetApi(Build.VERSION_CODES.M)
+            @Override
+            public void onClick(View view) {
+                dismiss();
+                String s=timePicker.getHour()+":"+timePicker.getMinute();
+                MainActivity m= (MainActivity) getActivity();
+                Toast.makeText(m.getApplicationContext(),s,Toast.LENGTH_LONG).show();
+            }
+        });
+        timePicker=view.findViewById(R.id.timePicker);
+
+        return view;
+
+    }
+
+}
+///////////////////////////
+mainactivity ///show the fragment
+
+		FragmentTransaction fragmentTransaction=getFragmentManager().beginTransaction();
+                    pop pop1=new pop();
+                    pop1.show(fragmentTransaction,"time");
+

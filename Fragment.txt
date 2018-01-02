@@ -1,0 +1,35 @@
+
+import android.os.Bundle;
+import android.app.Fragment;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+public class myfragment extends Fragment {
+    public  myfragment(){
+
+    }
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.activity_main2, container, false);
+    }
+}
+
+
+
+main
+
+    public void load(View view) {
+        // Create new fragment and transaction
+       myfragment myfragment2 = new myfragment();
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+
+// Replace whatever is in the fragment_container view with this fragment,
+// and add the transaction to the back stack
+        transaction.replace(R.id.relayout,myfragment2);
+        transaction.addToBackStack(null);
+
+
+
+    }s

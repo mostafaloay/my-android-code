@@ -1,0 +1,11 @@
+    Intent sendIntent = getPackageManager().getLaunchIntentForPackage("com.example.iraq.recev");
+        Bundle bundle=new Bundle();
+        bundle.putString("key","mostafa loay jasim");
+        sendIntent.putExtras(bundle);
+        startActivity(sendIntent);
+    }
+
+////
+
+  Bundle bundle=getIntent().getExtras();
+        Toast.makeText(getApplicationContext(),bundle.getString("key"),Toast.LENGTH_SHORT).show();

@@ -1,0 +1,218 @@
+
+
+public class MainActivity extends AppCompatActivity {
+    TextView textView;
+    SeekBar seekBar;
+    int progress;
+    MediaPlayer mediaPlayer=new MediaPlayer();
+    int check=0;
+    ArrayList<songinfo> arrayList=new ArrayList<>();
+    ListView listView;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        textView = (TextView) findViewById(R.id.text);
+        seekBar= (SeekBar) findViewById(R.id.seekBar);
+        seekBar.setMax(mediaPlayer.getDuration());
+        listView= (ListView) findViewById(R.id.lv);
+         getallsong();
+        final myadapter myadapter=new myadapter();
+        listView.setAdapter(myadapter);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                mediaPlayer.stop();
+                mediaPlayer=new MediaPlayer();
+
+                try {
+                    mediaPlayer.setDataSource(arrayList.get(i).path);
+                    mediaPlayer.prepare();
+                    mediaPlayer.start();
+                    seekBar.setMax(mediaPlayer.getDuration());
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
+
+
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                progress=i;
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                mediaPlayer.seekTo(seekBar.getProgress());
+
+            }
+        });
+        thread.start();
+
+    }
+
+
+    public void click(View view) {
+        if (check==1){
+            try {
+                mediaPlayer.prepare();
+                check=0;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+    }
+        mediaPlayer.start();
+    }
+
+    public void stop(View view) {
+        check=1;
+
+        mediaPlayer.stop();
+    }
+
+    public void pause(View view) {
+        mediaPlayer.pause();
+    }
+
+    Thread thread=new Thread(){
+
+        @Override
+        public void run() {
+            while (mediaPlayer != null) {
+                try {
+                    Thread.sleep(1000); } catch (InterruptedException e) {}
+                seekBar.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        seekBar.setProgress(mediaPlayer.getCurrentPosition());
+
+                    }
+                });
+            }
+        }
+
+    };
+
+
+    Cursor cursor;
+    public void getallsong(){
+        Uri uri= MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+        String s=MediaStore.Audio.Media.IS_MUSIC+" != 0";
+        cursor=managedQuery(uri,null,s,null,null);
+
+        if(cursor!=null) {
+            if (cursor.moveToFirst()) {
+
+                do {
+                    String path = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.));
+                    String songname = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DISPLAY_NAME));
+                    String albumename = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM));
+                    String artistname = cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST));
+                    arrayList.add(new songinfo(path, songname, albumename, artistname));
+
+                } while (cursor.moveToNext());
+            }
+
+            cursor.close();
+
+        }
+
+
+
+    }
+
+
+    public  class myadapter extends BaseAdapter {
+
+        @Override
+        public int getCount() {
+            return arrayList.size();
+        }
+
+        @Override
+        public Object getItem(int i) {
+            return null;
+        }
+
+        @Override
+        public long getItemId(int i) {
+            return 0;
+        }
+
+        @Override
+        public View getView(int i, View view, ViewGroup viewGroup) {
+            LayoutInflater layoutInflater=getLayoutInflater();
+            View view1=layoutInflater.inflate(R.layout.row,null);
+            TextView songname=(TextView)view1.findViewById(R.id.songname);
+            songname.setText(arrayList.get(i).songname);
+
+            TextView artistname=(TextView)view1.findViewById(R.id.artistname);
+            artistname.setText(arrayList.get(i).artistname);
+
+
+            return view1;
+        }
+    }
+
+
+}
+
+
+
+
+/////////////
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+///////////////
+package com.example.iraq.search;
+
+/**
+ * Created by iraq on 9/25/2017.
+ */
+
+public class songinfo {
+    public String path;
+    public String songname;
+    public String albumename;
+    public String artistname;
+
+    public songinfo(String path, String songname, String albumename, String artistname) {
+        this.path = path;
+        this.songname = songname;
+        this.albumename = albumename;
+        this.artistname = artistname;
+    }
+}
+
+////////////////////////////////////
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/songname"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:textSize="24sp"
+        android:textColor="@color/colorAccent"/>
+
+    <TextView
+        android:id="@+id/artistname"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="TextView" android:layout_marginTop="10dp"/>
+
+</LinearLayout>

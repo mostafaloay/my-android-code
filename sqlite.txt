@@ -1,0 +1,83 @@
+
+public class dbconnection extends SQLiteOpenHelper {
+
+    public dbconnection(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
+        super(context, name, factory, version);
+    }
+
+    @Override
+    public void onCreate(SQLiteDatabase sqLiteDatabase) {
+    sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS`admin` (\n" +
+            "\t`id`\tINTEGER NOT NULL,\n" +
+            "\t`name`\tTEXT,\n" +
+            "\tPRIMARY KEY(`id`)\n" +
+            ");");
+    }
+
+    @Override
+    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
+        sqLiteDatabase.execSQL("drop table IF EXISTS admin");
+            onCreate(sqLiteDatabase);
+
+    }
+    public void insertintoadmin(String adminname){
+        SQLiteDatabase sqLiteDatabase=this.getWritableDatabase();
+        ContentValues contentValues=new ContentValues();
+        contentValues.put("name",adminname);
+        sqLiteDatabase.insert("admin",null,contentValues);
+    }
+
+    public ArrayList<String> getalladmin(){
+        ArrayList  arrayList=new ArrayList();
+
+        SQLiteDatabase sqLiteDatabase=this.getReadableDatabase();
+        Cursor cursor=sqLiteDatabase.rawQuery("select * from admin",null);
+        cursor.moveToFirst();// go to first
+        while (cursor.isAfterLast()==false){// ?? ???? ????? ???? ???
+            arrayList.add(cursor.getString(cursor.getColumnIndex("name")));
+            cursor.moveToNext();
+        }
+        return arrayList;
+
+    }
+
+
+
+  /////////
+    public void deleteR (Integer id)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("delete from admin where id="+ Integer.toString(id));
+        // db.delete("admin", "id = ?,name=? ", new String[] { Integer.toString(id) ,"hussien"});
+    }
+
+
+    public void  updateR (String name,Integer id )
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("update admin set name='" + name+ "' where id="+ Integer.toString(id));
+  /* ContentValues contentValues = new ContentValues();
+        contentValues.put("name", name);
+        db.update("admin", contentValues, "id = ? ", new String[] { Integer.toString(id) } );*//**//**/
+
+    }
+}
+
+
+
+//////////////////////////////////
+in main activity 
+
+        EditText editText= (EditText) findViewById(R.id.editText);
+        ListView listView= (ListView) findViewById(R.id.lv);
+
+        dbconnection dbconnection=new dbconnection(this,"database.db",null,1);
+        dbconnection.insertintoadmin(editText.getText().toString());
+
+        ArrayList arrayList=dbconnection.getalladmin();
+
+        ArrayAdapter arrayAdapter=new ArrayAdapter(this,android.R.layout.simple_list_item_1,arrayList);
+        listView.setAdapter(arrayAdapter);
+
+
+//////////////////

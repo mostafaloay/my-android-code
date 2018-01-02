@@ -1,0 +1,121 @@
+public class service extends Service {
+    // Binder given to clients
+    private final IBinder mBinder = new LocalBinder();
+    // Random number generator
+    private final Random mGenerator = new Random();
+
+    /**
+     * Class used for the client Binder.  Because we know this service always
+     * runs in the same process as its clients, we don't need to deal with IPC.
+     */
+    public class LocalBinder extends Binder {
+        service getService() {
+            // Return this instance of LocalService so clients can call public methods
+            return service.this;
+        }
+    }
+
+
+    static int a=0;
+    static boolean check=true;
+    @Nullable
+    @Override
+    public IBinder onBind(Intent numintent) {
+        Toast.makeText(this, "ON BIND" , Toast.LENGTH_SHORT).show();
+
+        return mBinder;
+
+
+
+    }
+
+    @Override
+    public boolean onUnbind(Intent intent) {
+        Toast.makeText(this, "ON UN  BIND" , Toast.LENGTH_SHORT).show();
+
+        return super.onUnbind(intent);
+    }
+
+    @Override
+    public void onRebind(Intent intent) {
+        Toast.makeText(this, "ON REBIND" , Toast.LENGTH_SHORT).show();
+        check=false;
+
+        super.onRebind(intent);
+    }
+
+    public int getRandomNumber() {
+        return mGenerator.nextInt(100);
+    }
+
+    @Override
+    public void onDestroy() {
+        Toast.makeText(this,"destroy",Toast.LENGTH_LONG).show();
+
+    }
+}
+////////////////////
+manifast
+
+ <service
+            android:name=".service"
+            android:enabled="true" />
+
+
+////////////////////////////////
+mainactivity
+
+
+ service mService;
+    boolean mBound = false;
+
+
+
+ //start
+    public void srart(View view) {
+        Intent intent = new Intent(getApplicationContext(), service.class);
+        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+
+    }
+    //stop
+    public void stop(View view) {
+        // Unbind from the service
+        if (mBound) {
+            unbindService(mConnection);
+            mBound = false;
+        }
+    }
+// get the number
+    public void getrandomnum(View v) {
+        if (mBound) {
+            // Call a method from the LocalService.
+            // However, if this call were something that might hang, then this request should
+            // occur in a separate thread to avoid slowing down the activity performance.
+            int num = mService.getRandomNumber();
+            Toast.makeText(this, "number: " + num, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+
+
+    // for build connection to the service
+    private ServiceConnection mConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName className, IBinder service) {
+
+            service.LocalBinder binder = (service.LocalBinder) service;
+            mService = binder.getService();
+            mBound = true;
+            Toast.makeText(MainActivity.this, "number: ", Toast.LENGTH_SHORT).show();
+
+        }
+
+        // when service disconnect
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+            mBound = false;
+        }
+    };
+
+

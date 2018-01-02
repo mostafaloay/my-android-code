@@ -1,0 +1,78 @@
+
+
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+
+    private GoogleMap mMap;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_maps);
+
+        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+        mMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
+
+        // Add a marker in Sydney and move the camera
+        LatLng sydney = new LatLng(20, 74);
+
+        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
+
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+  mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latLng) {
+                Toast.makeText(getApplicationContext(),String.valueOf(latLng.latitude),Toast.LENGTH_SHORT).show();
+            }
+        });
+
+    }
+
+    public void move(View view) {
+
+        // Add a marker in Sydney and move the camera
+        LatLng sydney = new LatLng(50, 20);
+
+        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney").icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher_round)));
+
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        CameraPosition cameraPosition=CameraPosition.builder()
+                .target(sydney).zoom(13).bearing(50).build();
+        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
+        CircleOptions circleOptions=new CircleOptions().center(sydney)
+                .radius(1000).strokeColor(Color.GREEN);
+        mMap.addCircle(circleOptions);
+
+
+
+ mMap.setBuildingsEnabled(true);
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+         return;}
+
+        mMap.setMyLocationEnabled(true);
+        mMap.getUiSettings().setZoomControlsEnabled(true);
+
+
+        mMap.addPolyline(new PolylineOptions()
+                .add(sydney,new LatLng(22,74),new LatLng(22,54))
+                .color(Color.GREEN)
+                . geodesic(true)
+                .width(1));
+
+        mMap.addPolygon(new PolygonOptions()
+        .add(sydney,new LatLng(24,77) ,new LatLng(24,57),new LatLng(24,47))
+                .strokeColor(Color.GREEN)
+                 .strokeWidth(8));
+
+    }
+    }
+

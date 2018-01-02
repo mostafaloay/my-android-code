@@ -1,0 +1,83 @@
+public class Reciver  extends BroadcastReceiver{
+    @Override
+    public void onReceive(Context context, Intent intent) {
+
+        try {
+            if(intent.getAction().equals("android.intent.action.PHONE_STATE")){
+
+                String stat=intent.getStringExtra(TelephonyManager.EXTRA_STATE);
+                String num=intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
+                Toast.makeText(context,stat+"  "+num,Toast.LENGTH_LONG).show();
+            }
+
+         }catch (Exception e){
+
+        }
+
+    }
+}
+///////////
+manifast
+
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+
+
+
+<application
+
+
+        <receiver android:name=".Reciver">
+            <intent-filter>
+                <action android:name="android.intent.action.PHONE_STATE" />
+            </intent-filter>
+        </receiver>
+    </application>
+
+
+
+
+
+
+
+///////////////////////
+still detected all the call 
+
+public class IncomingCall extends BroadcastReceiver {
+    
+    public void onReceive(Context context, Intent intent) {
+        
+    try {
+               // TELEPHONY MANAGER class object to register one listner
+                TelephonyManager tmgr = (TelephonyManager) context
+                        .getSystemService(Context.TELEPHONY_SERVICE);
+                        
+                //Create Listner
+                MyPhoneStateListener PhoneListener = new MyPhoneStateListener();
+                
+                // Register listener for LISTEN_CALL_STATE
+                tmgr.listen(PhoneListener, PhoneStateListener.LISTEN_CALL_STATE);
+        
+        } catch (Exception e) {
+            Log.e("Phone Receive Error", " " + e);
+        }
+
+    }
+
+    private class MyPhoneStateListener extends PhoneStateListener {
+
+        public void onCallStateChanged(int state, String incomingNumber) {
+        
+            Log.d("MyPhoneListener",state+"   incoming no:"+incomingNumber);
+
+            if (state == 1) {
+
+                String msg = "New Phone Call Event. Incomming Number : "+incomingNumber;
+                int duration = Toast.LENGTH_LONG;
+                Toast toast = Toast.makeText(pcontext, msg, duration);
+                toast.show();
+
+            }
+        }
+    }
+}
+ 

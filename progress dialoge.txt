@@ -1,0 +1,6 @@
+     progress=new ProgressDialog(this);
+        progress.setMessage("Downloading Music");
+        progress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        progress.setIndeterminate(true);
+        progress.setProgress(40);
+        progress.show();

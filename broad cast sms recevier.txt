@@ -1,0 +1,48 @@
+class
+
+public class Reciver  extends BroadcastReceiver{
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        Bundle bundle=intent.getExtras();
+
+        try {
+            if(bundle!=null){
+
+                final Object[] pdusObj = (Object[]) bundle.get("pdus");
+                for (int i=0;i<pdusObj.length;i++){
+
+                    SmsMessage smsMessage=SmsMessage.createFromPdu((byte[]) pdusObj[i]);
+                    String phone=smsMessage.getDisplayOriginatingAddress();
+                    String body= smsMessage.getDisplayMessageBody();
+                    NewMessageNotification newMessageNotification=new NewMessageNotification();
+
+                    newMessageNotification.notify(context,phone,body,1);
+
+
+
+                }
+
+            }
+        }catch (Exception e){
+
+        }
+
+    }
+}
+////////////////////////////
+manifast
+
+
+    <uses-permission android:name="android.permission.SEND_SMS" />
+    <uses-permission android:name="android.permission.READ_SMS" />
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
+
+
+  <application
+        <receiver android:name=".Reciver">
+            <intent-filter>
+                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
+            </intent-filter>
+        </receiver>
+    </application>
+    

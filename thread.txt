@@ -1,0 +1,24 @@
+Thread thread=new Thread(){
+        int a=0;
+        @Override
+        public void run() {
+            while (true){
+
+                mainActivity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        textView.setText(String.valueOf(a));
+                    }
+                });
+
+
+                a++;
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }
+    };

@@ -1,0 +1,10 @@
+     LayoutInflater inflater=getLayoutInflater();
+        View view =inflater.inflate(R.layout.content, (ViewGroup) findViewById(R.id.myview));
+        Button button= (Button) view.findViewById(R.id.button2);
+        button.setText("welcome from the inflate view");
+
+
+        Toast toast=new Toast(this);
+        toast.setDuration(Toast.LENGTH_LONG);
+        toast.setView(view);
+        toast.show();

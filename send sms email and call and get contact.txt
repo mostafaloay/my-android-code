@@ -1,0 +1,137 @@
+   Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_VIEW);
+        sendIntent.setData(Uri.parse("sms:07713688783"));
+        sendIntent.putExtra(Intent.EXTRA_TEXT, "This is my text to send.");
+        startActivity(sendIntent);
+
+
+//////////////////////////////////////////
+
+
+Intent sendIntent = new Intent();
+sendIntent.setAction(Intent.ACTION_SEND);
+sendIntent.putExtra(Intent.EXTRA_TEXT, "This is my text to send.");
+sendIntent.setType("text/plain");
+startActivity(sendIntent);
+
+////////////////////////////////////////
+
+snde email
+
+ Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_SUBJECT,"welcome");
+        sendIntent.putExtra(Intent.EXTRA_TEXT, "This is my text to send.");
+        sendIntent.putExtra(Intent.EXTRA_EMAIL, "s@yahho.com");
+
+        sendIntent.setType("text/html");
+        startActivity(Intent.createChooser(sendIntent,"please choose the app"));
+
+//////////////////////////////////////
+
+call
+  Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_CALL);
+        sendIntent.setData(Uri.parse("tel:55555"));
+
+
+        startActivity(sendIntent);
+
+
+    <uses-permission android:name="android.permission.CALL_PHONE"/>
+
+
+////////////////////////////////
+
+get all contact to app
+
+
+ private void getContactList() {
+        ContentResolver cr = getContentResolver();
+        Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
+                null, null, null, null);
+
+        if ((cur != null ? cur.getCount() : 0) > 0) {
+            while (cur != null && cur.moveToNext()) {
+                String id = cur.getString(
+                        cur.getColumnIndex(ContactsContract.Contacts._ID));
+                String name = cur.getString(cur.getColumnIndex(
+                        ContactsContract.Contacts.DISPLAY_NAME));
+
+                if (cur.getInt(cur.getColumnIndex(
+                        ContactsContract.Contacts.HAS_PHONE_NUMBER)) > 0) {
+                    Cursor pCur = cr.query(
+                            ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                            null,
+                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
+                            new String[]{id}, null);
+                    while (pCur.moveToNext()) {
+                        String phoneNo = pCur.getString(pCur.getColumnIndex(
+                                ContactsContract.CommonDataKinds.Phone.NUMBER));
+                        Log.i("naaaaaaaaaaaame", "Name: " + name);
+                        Log.i("phonnnnnnne", "Phone Number: " + phoneNo);
+                    }
+                    pCur.close();
+                }
+            }
+        }
+        if(cur!=null){
+            cur.close();
+        }
+    }
+
+    <uses-permission android:name="android.permission.READ_CONTACTS"/>
+/////////////////////////////////////////////////////////////////////
+open chooser to choose one number
+
+    static final int PICK_CONTACT=1;
+
+
+    public void click(View view) {
+
+        Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
+        startActivityForResult(intent, PICK_CONTACT);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case (PICK_CONTACT) :
+                if (resultCode == Activity.RESULT_OK) {
+
+                    Uri contactData = data.getData();
+                    Cursor c =  managedQuery(contactData, null, null, null, null);
+                    if (c.moveToFirst()) {
+
+
+                        String id =c.getString(c.getColumnIndexOrThrow(ContactsContract.Contacts._ID));
+
+                        String hasPhone =c.getString(c.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER));
+
+                        if (hasPhone.equalsIgnoreCase("1")) {
+                            Cursor phones = getContentResolver().query(
+                                    ContactsContract.CommonDataKinds.Phone.CONTENT_URI,null,
+                                    ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = "+ id,
+                                    null, null);
+                            phones.moveToFirst();
+                            String cNumber = phones.getString(phones.getColumnIndex("data1"));
+                            String name = c.getString(c.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+                            Toast.makeText(getApplicationContext(),name+cNumber,Toast.LENGTH_LONG).show();
+
+
+                        }
+
+
+                }
+                }
+                break;
+        }
+    }
+
+
+    <uses-permission android:name="android.permission.READ_CONTACTS"/>
+
+
+
+
+

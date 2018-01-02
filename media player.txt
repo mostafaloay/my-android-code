@@ -1,0 +1,107 @@
+package com.example.iraq.search;
+
+import android.app.SearchManager;
+import android.content.Context;
+import android.content.Intent;
+import android.media.MediaPlayer;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.support.v7.widget.SearchView;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.SeekBar;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import java.io.IOException;
+
+
+public class MainActivity extends AppCompatActivity {
+    TextView textView;
+    SeekBar seekBar;
+    int progress;
+    MediaPlayer mediaPlayer=new MediaPlayer();
+    int check=0;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        textView = (TextView) findViewById(R.id.text);
+        seekBar= (SeekBar) findViewById(R.id.seekBar);
+
+
+        try {
+            mediaPlayer.setDataSource("http://musicil.panet.co.il/Y87T234hM438923Wrn222/song/tamer-3ashur/Panet.co.il_Tamer-3ashor-Agmal-Helm.mp3");
+
+            mediaPlayer.prepare();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        seekBar.setMinimumWidth(mediaPlayer.getCurrentPosition());
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                progress=i;
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                mediaPlayer.seekTo(seekBar.getProgress());
+
+            }
+        });
+        thread.start();
+
+    }
+
+
+    public void click(View view) {
+        if (check==1){
+            try {
+                mediaPlayer.prepare();
+                check=0;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+    }
+        mediaPlayer.start();
+    }
+
+    public void stop(View view) {
+        check=1;
+
+        mediaPlayer.stop();
+    }
+
+    public void pause(View view) {
+        mediaPlayer.pause();
+    }
+    Thread thread=new Thread(){
+
+        @Override
+        public void run() {
+            while (mediaPlayer != null) {
+                try {
+                    Thread.sleep(1000); } catch (InterruptedException e) {}
+                seekBar.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        seekBar.setProgress(mediaPlayer.getCurrentPosition());
+
+                    }
+                });
+            }
+        }
+
+    };
+}

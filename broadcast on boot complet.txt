@@ -1,0 +1,23 @@
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+
+
+  <receiver android:name=".broadcast">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.PHONE_STATE"/>
+
+            </intent-filter>
+        </receiver>
+
+
+///////
+
+public class broadcast extends BroadcastReceiver {
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        Toast.makeText(context, "Booting Completed", Toast.LENGTH_LONG).show();
+
+
+    }
+}
