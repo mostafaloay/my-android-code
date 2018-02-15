@@ -1,0 +1,14 @@
+    
+    implementation 'com.android.support:appcompat-v7:27.0.2'
+
+    //recycler
+    compile'com.android.support:recyclerview-v7:27.0.2'
+    //glide
+    implementation 'com.github.bumptech.glide:glide:4.6.1'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.6.1'
+    //circleimageview
+    compile 'de.hdodenhof:circleimageview:2.2.0'
+    //picasso
+    implementation 'com.squareup.picasso:picasso:2.5.2'
+    //recyclerview-animators
+    compile 'jp.wasabeef:recyclerview-animators:2.3.0'
