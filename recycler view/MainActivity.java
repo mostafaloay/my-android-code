@@ -28,10 +28,10 @@ public class MainActivity extends AppCompatActivity {
         RecyclerView recyclerView=findViewById(R.id.recycelerview);
 
         recyclerView.setAdapter(new RecyclerViewAdapter(mNames,mImageUrls,this));
-        recyclerView.setLayoutManager( new LinearLayoutManager(this));
+LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
 
-        SlideInUpAnimator animator = new SlideInUpAnimator(new OvershootInterpolator(1f));
-        recyclerView.setItemAnimator(animator);
+recyclerView.setLayoutManager( layoutManager);
+
 
 
 
